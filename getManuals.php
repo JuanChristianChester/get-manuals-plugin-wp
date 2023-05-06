@@ -21,15 +21,20 @@ function display_serial_number_search_form()
 
     if (isset($_POST['submit'])) {
         $serial_number = $_POST['serial_number'];
-        $manual = get_manual_by_serial_number($serial_number);
+        $product_code = $_POST['product_code'];
+        $manual = get_manual_by_serial_number_and_product_code($serial_number, $product_code);
         if (!$manual) {
-            $error = 'Serial number not found. Please enter a new one.';
+            $error = 'Serial number and/or product code not found. Please enter valid ones.';
         }
     }
 ?>
     <form method="post" action="">
         <label for="serial_number">Enter Serial Number:</label>
         <input type="text" name="serial_number" id="serial_number">
+        <br><br>
+        <label for="product_code">Enter Product Code:</label>
+        <input type="text" name="product_code" id="product_code">
+        <br><br>
         <input type="submit" name="submit" value="Search">
     </form>
 
@@ -41,6 +46,7 @@ function display_serial_number_search_form()
         <h3>Manual Details</h3>
         <ul>
             <li><strong>Serial Number:</strong> <?php echo $manual->SerialNumber; ?></li>
+            <li><strong>Product Code:</strong> <?php echo $manual->ProductCode; ?></li>
             <li><strong>Manual:</strong> <a href="<?php echo $manual->Manual; ?>" target="_blank"><?php echo $manual->Manual; ?></a></li>
         </ul>
     <?php } ?>
@@ -48,19 +54,19 @@ function display_serial_number_search_form()
 }
 
 
+
 //Function to search the DB for the serial number and return the manual
-function get_manual_by_serial_number($serial_number)
+function get_manual_by_serial_number_and_product_code($serial_number, $product_code)
 {
     global $wpdb;
-    $table_name = 'tblManuals';
-
+    $table_name = 'tblJoin';
     $manual = $wpdb->get_row($wpdb->prepare(
-        "SELECT * FROM $table_name WHERE SerialNumber = %s",
-        $serial_number
+        "SELECT m.* FROM tblManuals m INNER JOIN tblJoin j ON m.ManualID = j.ManualID WHERE j.SerialNumber = %s AND j.ProductID = %s",
+        $serial_number, $product_code
     ));
-
     return $manual;
 }
+
 
 
 
