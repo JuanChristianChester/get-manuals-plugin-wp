@@ -15,41 +15,41 @@ add_shortcode('serial_number_search_form', 'display_serial_number_search_form');
 /// Function to display the search form and manual details
 function display_serial_number_search_form()
 {
-    global $wpdb;
-    $manual = null;
-    $error = '';
+  global $wpdb;
+  $manual = null;
+  $error = '';
 
-    if (isset($_POST['submit'])) {
-        $serial_number = $_POST['serial_number'];
-        $product_code = $_POST['product_code'];
-        $manual = get_manual_by_serial_number_and_product_code($serial_number, $product_code);
-        if (!$manual) {
-            $error = 'Serial number and/or product code not found. Please enter valid ones.';
-        }
+  if (isset($_POST['submit'])) {
+    $serial_number = $_POST['serial_number'];
+    $product_code = $_POST['product_code'];
+    $manual = get_manual_by_serial_number_and_product_code($serial_number, $product_code);
+    if (!$manual) {
+      $error = 'Serial number and/or product code not found. Please enter valid ones.';
     }
+  }
 ?>
-    <form method="post" action="">
-        <label for="serial_number">Enter Serial Number:</label>
-        <input type="text" name="serial_number" id="serial_number">
-        <br><br>
-        <label for="product_code">Enter Product Code:</label>
-        <input type="text" name="product_code" id="product_code">
-        <br><br>
-        <input type="submit" name="submit" value="Search">
-    </form>
+  <form method="post" action="">
+    <label for="serial_number">Enter Serial Number:</label>
+    <input type="text" name="serial_number" id="serial_number">
+    <br><br>
+    <label for="product_code">Enter Product Code:</label>
+    <input type="text" name="product_code" id="product_code">
+    <br><br>
+    <input type="submit" name="submit" value="Search">
+  </form>
 
-    <?php if ($error) { ?>
-        <p><?php echo $error; ?></p>
-    <?php } ?>
+  <?php if ($error) { ?>
+    <p><?php echo $error; ?></p>
+  <?php } ?>
 
-    <?php if ($manual) { ?>
-        <h3>Manual Details</h3>
-        <ul>
-            <li><strong>Serial Number:</strong> <?php echo $manual->SerialNumber; ?></li>
-            <li><strong>Product Code:</strong> <?php echo $manual->ProductCode; ?></li>
-            <li><strong>Manual:</strong> <a href="<?php echo $manual->Manual; ?>" target="_blank"><?php echo $manual->Manual; ?></a></li>
-        </ul>
-    <?php } ?>
+  <?php if ($manual) { ?>
+    <h3>Manual Details</h3>
+    <ul>
+      <li><strong>Serial Number:</strong> <?php echo $manual->SerialNumber; ?></li>
+      <li><strong>Product Code:</strong> <?php echo $manual->ProductCode; ?></li>
+      <li><strong>Manual:</strong> <a href="<?php echo $manual->Manual; ?>" target="_blank"><?php echo $manual->Manual; ?></a></li>
+    </ul>
+  <?php } ?>
 <?php
 }
 
@@ -58,54 +58,61 @@ function display_serial_number_search_form()
 //Function to search the DB for the serial number and return the manual
 function get_manual_by_serial_number_and_product_code($serial_number, $product_code)
 {
-    global $wpdb;
-    $table_name = 'tblJoin';
-    $manual = $wpdb->get_row($wpdb->prepare(
-        "SELECT m.* FROM tblManuals m INNER JOIN tblJoin j ON m.ManualID = j.ManualID WHERE j.SerialNumber = %s AND j.ProductID = %s",
-        $serial_number, $product_code
-    ));
-    return $manual;
+  global $wpdb;
+  $table_name = 'tblJoin';
+  $manual = $wpdb->get_row($wpdb->prepare(
+    "SELECT m.* FROM tblManuals m INNER JOIN tblJoin j ON m.ManualID = j.ManualID WHERE j.SerialNumber = %s AND j.ProductID = %s",
+    $serial_number,
+    $product_code
+  ));
+  return $manual;
 }
 
 
 
-
-
-
 // Activation hook
-register_activation_hook(__FILE__, 'my_plugin_activate');
+register_activation_hook('activate_GetManualsPlugin.getManuals.php', 'my_plugin_activate');
 function my_plugin_activate()
 {
+  global $wpdb;
+
+  // Create database tables
+  $wpdb->query(
+    "
     DROP TABLE IF EXISTS tblJoin;
-DROP TABLE IF EXISTS tblManuals;
-DROP TABLE IF EXISTS tblProduct;
-DROP TABLE IF EXISTS tblDate;
+    DROP TABLE IF EXISTS tblManuals;
+    DROP TABLE IF EXISTS tblProduct;
+    DROP TABLE IF EXISTS tblDate;
 
-CREATE TABLE tblDate (
-  DateID varchar(6) PRIMARY KEY,
-  Date date
-);
+    CREATE TABLE tblDate (
+      DateID varchar(6) PRIMARY KEY,
+      Date date
+    );
 
-CREATE TABLE tblProduct (
-  ProductID VARCHAR(30) PRIMARY KEY,
-  ProductName VARCHAR(255),
-  ProductDescription TEXT
-);
+    CREATE TABLE tblProduct (
+      ProductID VARCHAR(30) PRIMARY KEY,
+      ProductName VARCHAR(255),
+      ProductDescription TEXT
+    );
 
-CREATE TABLE tblManuals (
-  ManualID varchar(15) PRIMARY KEY,
-  filename VARCHAR(255),
-  pdf BLOB
-);
+    CREATE TABLE tblManuals (
+      ManualID varchar(15) PRIMARY KEY,
+      filename VARCHAR(255),
+      pdf BLOB
+    );
 
-CREATE TABLE tblJoin (
-  DateID VARCHAR(6),
-  ProductID VARCHAR(30),
-  ManualID varchar(15),
-  PRIMARY KEY (DateID, ProductID)
-);
+    CREATE TABLE tblJoin (
+      DateID VARCHAR(6),
+      ProductID VARCHAR(30),
+      ManualID varchar(15),
+      PRIMARY KEY (DateID, ProductID)
+    );
+  "
+  );
 
-/* Two dates from the past 20 years */
+  // Insert data into database tables
+  $wpdb->query(
+    "
 INSERT INTO tblDate (DateID, Date)
 VALUES
   ('010501', '2001-05-01'),
@@ -165,16 +172,15 @@ INSERT INTO tblJoin (DateID, ProductID, ManualID)
 VALUES
   ('010501', 'C08-001-001-01-1-1', 'MAN-0001'),
   ('020501', 'C05-35-02', 'MAN-0002');
-
-
-
+"
+  );
 }
 
 // Deactivation hook
 register_deactivation_hook(__FILE__, 'my_plugin_deactivate');
 function my_plugin_deactivate()
 {
-    // Code to be executed on plugin deactivation
+  // Code to be executed on plugin deactivation
 }
 
 ?>
