@@ -87,3 +87,9 @@ INSERT INTO tblJoin (DateID, ProductID, ManualID)
 VALUES
   ('010501', 'C08-001-001-01-1-1', 'MAN-0001'),
   ('020501', 'C05-35-02', 'MAN-0002');
+
+
+  SELECT m.*
+FROM {$wpdb->prefix}tblJoin j
+INNER JOIN {$wpdb->prefix}tblManuals m ON j.ManualID = m.ManualID
+WHERE j.DateID = 'your_date_id' AND j.ProductID = 'your_product_id'
