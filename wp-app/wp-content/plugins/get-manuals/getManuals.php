@@ -124,8 +124,8 @@ function my_plugin_activate()
 
     $wpdb->query("INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename, pdf)
     VALUES 
-      ('MAN001', 'Man1.pdf', LOAD_FILE('https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man1.pdf),
-      'MAN002', 'Man2.pdf', LOAD_FILE('https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man2.pdf));");
+      ('MAN001', 'Man1.pdf', LOAD_FILE('https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man1.pdf)),
+      ('MAN002', 'Man2.pdf', LOAD_FILE('https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man2.pdf));");
 
     // // Load pdf files
     // $man1_pdf = file_get_contents('/public_html/pdfs/Man1.pdf');
