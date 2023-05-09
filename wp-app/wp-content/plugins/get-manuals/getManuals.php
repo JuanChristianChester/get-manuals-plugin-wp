@@ -46,7 +46,7 @@ function display_serial_number_search_form()
         <ul>
             <li><strong>Serial Number:</strong> <?php echo $manual->SerialNumber; ?></li>
             <li><strong>Product Code:</strong> <?php echo $manual->ProductCode; ?></li>
-            <li><strong>Manual:</strong> 
+            <li><strong>Manual:</strong>
                 <?php $pdf_url = $manual->Manual; ?>
                 <?php if ($pdf_url) { ?>
                     <iframe src="<?php echo $pdf_url; ?>" width="100%" height="800px"></iframe>
@@ -67,17 +67,28 @@ function display_serial_number_search_form()
 function get_manual_by_serial_number_and_product_code($serial_number, $product_code)
 {
     global $wpdb;
-    $manual = $wpdb->get_row($wpdb->prepare(
-        "
-        SELECT *
-        FROM {$wpdb->prefix}tblJoin
-        INNER JOIN {$wpdb->prefix}tblManuals ON {$wpdb->prefix}tblJoin.ManualID = {$wpdb->prefix}tblManuals.ManualID
-        INNER JOIN {$wpdb->prefix}tblProduct ON {$wpdb->prefix}tblJoin.ProductID = {$wpdb->prefix}tblProduct.ProductID
-        WHERE {$wpdb->prefix}tblJoin.SerialNumber = %s AND {$wpdb->prefix}tblProduct.ProductCode = %s;
-        ",
-        $serial_number,
-        $product_code
-    ));
+    // Define table names with prefix
+    $table_name_date = $wpdb->prefix . 'tblDate';
+    $table_name_product = $wpdb->prefix . 'tblProduct';
+    $table_name_manuals = $wpdb->prefix . 'tblManuals';
+    $table_name_join = $wpdb->prefix . 'tblJoin';
+
+    // Build SQL query with dynamic table names
+    $sql = "SELECT m.filename 
+        FROM $table_name_manuals AS m
+        INNER JOIN $table_name_join AS j ON m.ManualID = j.ManualID
+        INNER JOIN $table_name_date AS d ON j.DateID = d.DateID
+        INNER JOIN $table_name_product AS p ON j.ProductID = p.ProductID
+        WHERE j.DateID = %s AND j.ProductID = %s";
+
+// Prepare the SQL query with values
+$prepared_sql = $wpdb->prepare($sql, $serial_number, $product_code);
+
+// Execute the query and get the result
+$result = $wpdb->get_var($prepared_sql);
+$manual = $wpdb->get_var($prepared_sql);
+// Output the result
+echo $result;
 
     if (!$manual) {
         return false;
@@ -85,8 +96,6 @@ function get_manual_by_serial_number_and_product_code($serial_number, $product_c
 
     return $manual;
 }
-
-
 // activation hook
 
 register_activation_hook(__FILE__, 'my_plugin_activate');
