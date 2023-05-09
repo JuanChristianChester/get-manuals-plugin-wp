@@ -49,7 +49,6 @@ function display_serial_number_search_form()
             <li><strong>Manual:</strong>
                 <?php $pdf_url = $manual; ?>
                 <?php if ($pdf_url) { ?>
-                    <!-- <iframe src="<?php echo $pdf_url; ?>" width="100%" height="800px"></iframe> -->
                     <a href="https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/<?php echo $pdf_url; ?>" target="_blank"><?php echo $pdf_url; ?></a>
                 <?php } else { ?>
                     No manual available.
@@ -60,9 +59,6 @@ function display_serial_number_search_form()
 <?php
 }
 
-
-
-//Function to search the DB for the serial number and return the manual
 //Function to search the DB for the serial number and return the manual
 
 function get_manual_by_serial_number_and_product_code($serial_number, $product_code)
