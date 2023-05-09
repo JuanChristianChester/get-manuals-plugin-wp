@@ -103,24 +103,24 @@ function my_plugin_activate()
   $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tblDate");
 
   // Create tables if they don't exist
-  $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tblDate (
+  $wpdb->query("CREATE TABLE {$wpdb->prefix}tblDate (
       DateID varchar(6) PRIMARY KEY,
       Date date
     )");
 
-  $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tblProduct (
+  $wpdb->query("CREATE TABLE {$wpdb->prefix}tblProduct (
       ProductID VARCHAR(30) PRIMARY KEY,
       ProductName VARCHAR(255),
       ProductDescription TEXT
     )");
 
-  $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tblManuals (
+  $wpdb->query("CREATE TABLE {$wpdb->prefix}tblManuals (
       ManualID varchar(15) PRIMARY KEY,
       filename VARCHAR(255),
       pdf LONGBLOB,
     )");
 
-  $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tblJoin (
+  $wpdb->query("CREATE TABLE {$wpdb->prefix}tblJoin (
       DateID VARCHAR(6),
       ProductID VARCHAR(30),
       ManualID varchar(15),
