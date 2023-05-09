@@ -15,7 +15,6 @@ add_shortcode('serial_number_search_form', 'display_serial_number_search_form');
 /// Function to display the search form and manual details
 function display_serial_number_search_form()
 {
-    global $wpdb;
     $manual = null;
     $error = '';
 
@@ -61,17 +60,15 @@ function get_manual_by_serial_number_and_product_code($date_id, $product_code)
     global $wpdb;
     $manual = $wpdb->get_row($wpdb->prepare(
         "
-    SELECT tblManuals.filename 
-    FROM tblJoin 
-    INNER JOIN tblManuals ON tblJoin.ManualID = tblManuals.ManualID 
-    WHERE tblJoin.DateID = '$date_id' AND tblJoin.ProductID = '$product_code';
+    SELECT {$wpdb->prefix}tblManuals.filename 
+    FROM {$wpdb->prefix}tblJoin 
+    INNER JOIN {$wpdb->prefix}tblManuals ON {$wpdb->prefix}tblJoin.ManualID = {$wpdb->prefix}tblManuals.ManualID 
+    WHERE {$wpdb->prefix}tblJoin.DateID = '$date_id' AND {$wpdb->prefix}tblJoin.ProductID = '$product_code';
     ",
         $date_id,
         $product_code
     ));
     echo $wpdb->last_query;
-    echo '<br>';
-    echo $manual;
     return $manual;
 }
 
@@ -127,8 +124,8 @@ function my_plugin_activate()
 
     $wpdb->query("INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename, pdf)
     VALUES 
-      ('MAN001', 'Man1.pdf', NULL),
-      ('MAN002', 'Man2.pdf', NULL)");
+      ('MAN001', 'Man1.pdf', LOAD_FILE('https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man1.pdf)),
+      ('MAN002', 'Man2.pdf', LOAD_FILE('https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man2.pdf));");
 
     // // Load pdf files
     // $man1_pdf = file_get_contents('/public_html/pdfs/Man1.pdf');
