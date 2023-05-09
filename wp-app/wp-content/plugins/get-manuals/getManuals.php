@@ -47,9 +47,10 @@ function display_serial_number_search_form()
             <li><strong>Serial Number:</strong> <?php echo $manual->SerialNumber; ?></li>
             <li><strong>Product Code:</strong> <?php echo $manual->ProductCode; ?></li>
             <li><strong>Manual:</strong>
-                <?php $pdf_url = $manual->Manual; ?>
+                <?php $pdf_url = $manual; ?>
                 <?php if ($pdf_url) { ?>
-                    <iframe src="<?php echo $pdf_url; ?>" width="100%" height="800px"></iframe>
+                    <!-- <iframe src="<?php echo $pdf_url; ?>" width="100%" height="800px"></iframe> -->
+                    <a href="<?php echo $pdf_url; ?>" target="_blank"><?php echo $pdf_url; ?></a>
                 <?php } else { ?>
                     No manual available.
                 <?php } ?>
@@ -81,14 +82,11 @@ function get_manual_by_serial_number_and_product_code($serial_number, $product_c
         INNER JOIN $table_name_product AS p ON j.ProductID = p.ProductID
         WHERE j.DateID = %s AND j.ProductID = %s";
 
-// Prepare the SQL query with values
-$prepared_sql = $wpdb->prepare($sql, $serial_number, $product_code);
+    // Prepare the SQL query with values
+    $prepared_sql = $wpdb->prepare($sql, $serial_number, $product_code);
 
-// Execute the query and get the result
-$result = $wpdb->get_var($prepared_sql);
-$manual = $wpdb->get_var($prepared_sql);
-// Output the result
-echo $result;
+    // Execute the query and get the result
+    $manual = $wpdb->get_var($prepared_sql);
 
     if (!$manual) {
         return false;
