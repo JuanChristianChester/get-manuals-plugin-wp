@@ -108,14 +108,14 @@ function my_plugin_activate()
     $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tblManuals (
       ManualID varchar(15) PRIMARY KEY,
       filename VARCHAR(255),
-      pdf LONGBLOB
+      pdf LONGBLOB,
     )");
 
     $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tblJoin (
       DateID VARCHAR(6),
       ProductID VARCHAR(30),
       ManualID varchar(15),
-      PRIMARY KEY (DateID, ProductID)
+      PRIMARY KEY (DateID, ProductID, ManualID),
     )");
 
     // Insert data
