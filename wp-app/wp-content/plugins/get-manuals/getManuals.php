@@ -63,19 +63,25 @@ function display_serial_number_search_form()
 
 //Function to search the DB for the serial number and return the manual
 //Function to search the DB for the serial number and return the manual
+
 function get_manual_by_serial_number_and_product_code($serial_number, $product_code)
 {
     global $wpdb;
     $manual = $wpdb->get_row($wpdb->prepare(
         "
         SELECT *
-        FROM {$wpdb->prefix}tblJoin 
-        INNER JOIN {$wpdb->prefix}tblManuals ON {$wpdb->prefix}tblJoin.ManualID = {$wpdb->prefix}tblManuals.ManualID 
-        WHERE {$wpdb->prefix}tblJoin.SerialNumber = %s AND {$wpdb->prefix}tblJoin.ProductCode = %s;
+        FROM {$wpdb->prefix}tblJoin
+        INNER JOIN {$wpdb->prefix}tblManuals ON {$wpdb->prefix}tblJoin.ManualID = {$wpdb->prefix}tblManuals.ManualID
+        INNER JOIN {$wpdb->prefix}tblProduct ON {$wpdb->prefix}tblJoin.ProductID = {$wpdb->prefix}tblProduct.ProductID
+        WHERE {$wpdb->prefix}tblJoin.SerialNumber = %s AND {$wpdb->prefix}tblProduct.ProductCode = %s;
         ",
         $serial_number,
         $product_code
     ));
+
+    if (!$manual) {
+        return false;
+    }
 
     return $manual;
 }
