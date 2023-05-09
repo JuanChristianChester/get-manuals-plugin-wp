@@ -124,16 +124,16 @@ function my_plugin_activate()
 
     $wpdb->query("INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename, pdf)
     VALUES 
-      ('MAN001', 'Man1.pdf', LOAD_FILE('https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man1.pdf')),
-      ('MAN002', 'Man2.pdf', LOAD_FILE('https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man.pdf'))");
+      ('MAN001', 'Man1.pdf', NULL),
+      ('MAN002', 'Man2.pdf', NULL)");
 
-    // // Load pdf files
-    // $man1_pdf = file_get_contents('/public_html/pdfs/Man1.pdf');
-    // $man2_pdf = file_get_contents('/public_html/pdfs/Man2.pdf');
+    // Load pdf files
+    $man1_pdf = file_get_contents('/public_html/PDFs/Man1.pdf');
+    $man2_pdf = file_get_contents('/public_html/PDFs/Man2.pdf');
 
-    // // Insert pdf data
-    // $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}tblManuals SET pdf = %s WHERE ManualID = 'MAN001'", $man1_pdf));
-    // $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}tblManuals SET pdf = %s WHERE ManualID = 'MAN002'", $man2_pdf));
+    // Insert pdf data
+    $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}tblManuals SET pdf = %s WHERE ManualID = 'MAN001'", $man1_pdf));
+    $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}tblManuals SET pdf = %s WHERE ManualID = 'MAN002'", $man2_pdf));
 
     $wpdb->query("INSERT INTO {$wpdb->prefix}tblJoin (DateID, ProductID, ManualID)
     VALUES
