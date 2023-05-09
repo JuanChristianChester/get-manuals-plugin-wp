@@ -114,14 +114,14 @@ function my_plugin_activate()
     $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tblManuals (
       ManualID varchar(15) PRIMARY KEY,
       filename VARCHAR(255),
-      pdf LONGBLOB,
+      pdf LONGBLOB
     )");
 
     $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tblJoin (
       DateID VARCHAR(6),
       ProductID VARCHAR(30),
       ManualID varchar(15),
-      PRIMARY KEY (DateID, ProductID, ManualID),
+      PRIMARY KEY (DateID, ProductID, ManualID)
     )");
 
     // Insert data
@@ -137,22 +137,21 @@ function my_plugin_activate()
       ('C05-35-02', 'Air 5 Hypobaric Oxygen & Pressure', '0-40% O2 & 10-1300mbar (A) (Panel Mount)'),
       ('SAT-35-14', 'Air 5 Converter', 'USB to RS485 Converter')");
 
-    $url1 = 'https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man1.pdf';
-    $url2 = 'https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man2.pdf';
+    // $url1 = 'https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man1.pdf';
+    // $url2 = 'https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man2.pdf';
 
-    $file1 = file_get_contents($url1);
-    $file2 = file_get_contents($url2);
+    // $file1 = file_get_contents($url1);
+    // $file2 = file_get_contents($url2);
 
     $wpdb->query("INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename, pdf) 
     VALUES 
-  ('MAN001', 'Man1.pdf', '{$file1}'), 
-  ('MAN002', 'Man2.pdf', '{$file2}')");
+  ('MAN-0001', 'Man1.pdf', NULL), 
+  ('MAN-0002', 'Man2.pdf', NULL)");
 
     $wpdb->query("INSERT INTO {$wpdb->prefix}tblJoin (DateID, ProductID, ManualID)
     VALUES
   ('010501', 'C08-001-001-01-1-1', 'MAN-0001'),
   ('020501', 'C05-35-02', 'MAN-0002')");
-
 }
 
 // Deactivation hook
