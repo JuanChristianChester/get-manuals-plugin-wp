@@ -122,23 +122,17 @@ function my_plugin_activate()
       ('C05-35-02', 'Air 5 Hypobaric Oxygen & Pressure', '0-40% O2 & 10-1300mbar (A) (Panel Mount)'),
       ('SAT-35-14', 'Air 5 Converter', 'USB to RS485 Converter')");
 
-    $wpdb->query("INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename, pdf)
+    $url1 = 'https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man1.pdf';
+    $url2 = 'https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man2.pdf';
+
+    $file1 = file_get_contents($url1);
+    $file2 = file_get_contents($url2);
+
+    $wpdb->query("INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename, pdf) 
     VALUES 
-      ('MAN001', 'Man1.pdf', NULL),
-      ('MAN002', 'Man2.pdf', NULL)");
+  ('MAN001', 'Man1.pdf', '{$file1}'), 
+  ('MAN002', 'Man2.pdf', '{$file2}')");
 
-    // Load pdf files
-    $man1_pdf = file_get_contents('/public_html/PDFs/Man1.pdf');
-    $man2_pdf = file_get_contents('/public_html/PDFs/Man2.pdf');
-
-    // Insert pdf data
-    $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}tblManuals SET pdf = %s WHERE ManualID = 'MAN001'", $man1_pdf));
-    $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}tblManuals SET pdf = %s WHERE ManualID = 'MAN002'", $man2_pdf));
-
-    $wpdb->query("INSERT INTO {$wpdb->prefix}tblJoin (DateID, ProductID, ManualID)
-    VALUES
-      ('010501', 'C08-001-001-01-1-1', 'MAN001'),
-      ('020501', 'C05-35-02', 'MAN002')");
 }
 
 // Deactivation hook
