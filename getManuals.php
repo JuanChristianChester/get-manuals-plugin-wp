@@ -150,8 +150,8 @@ function my_plugin_activate()
 
   $wpdb->query("INSERT INTO {$wpdb->prefix}tblJoin (DateID, ProductID, ManualID)
     VALUES
-  ('010501', 'C08-001-001-01-1-1', 'MAN-0001'),
-  ('020501', 'C05-35-02', 'MAN-0002')");
+  ('010501', 'C08-001-001-01-1-1', 'MAN001'),
+  ('020501', 'C05-35-02', 'MAN002')");
 }
 
 // Deactivation hook
