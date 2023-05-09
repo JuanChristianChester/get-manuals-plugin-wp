@@ -41,36 +41,45 @@ function display_serial_number_search_form()
         <p><?php echo $error; ?></p>
     <?php } ?>
 
-    <?php ?>
-    <h3>Manual Details</h3>
-    <ul>
-        <li><strong>Serial Number:</strong> <?php echo $manual->SerialNumber; ?></li>
-        <li><strong>Product Code:</strong> <?php echo $manual->ProductCode; ?></li>
-        <li><strong>Manual:</strong> <a href="<?php echo $manual->Manual; ?>" target="_blank"><?php echo $manual->Manual; ?></a></li>
-    </ul>
-    <?php ?>
+    <?php if ($manual) { ?>
+        <h3>Manual Details</h3>
+        <ul>
+            <li><strong>Serial Number:</strong> <?php echo $manual->SerialNumber; ?></li>
+            <li><strong>Product Code:</strong> <?php echo $manual->ProductCode; ?></li>
+            <li><strong>Manual:</strong> 
+                <?php $pdf_url = $manual->Manual; ?>
+                <?php if ($pdf_url) { ?>
+                    <iframe src="<?php echo $pdf_url; ?>" width="100%" height="800px"></iframe>
+                <?php } else { ?>
+                    No manual available.
+                <?php } ?>
+            </li>
+        </ul>
+    <?php } ?>
 <?php
 }
 
 
+
 //Function to search the DB for the serial number and return the manual
 //Function to search the DB for the serial number and return the manual
-function get_manual_by_serial_number_and_product_code($date_id, $product_code)
+function get_manual_by_serial_number_and_product_code($serial_number, $product_code)
 {
     global $wpdb;
     $manual = $wpdb->get_row($wpdb->prepare(
         "
-    SELECT {$wpdb->prefix}tblManuals.filename 
-    FROM {$wpdb->prefix}tblJoin 
-    INNER JOIN {$wpdb->prefix}tblManuals ON {$wpdb->prefix}tblJoin.ManualID = {$wpdb->prefix}tblManuals.ManualID 
-    WHERE {$wpdb->prefix}tblJoin.DateID = '$date_id' AND {$wpdb->prefix}tblJoin.ProductID = '$product_code';
-    ",
-        $date_id,
+        SELECT *
+        FROM {$wpdb->prefix}tblJoin 
+        INNER JOIN {$wpdb->prefix}tblManuals ON {$wpdb->prefix}tblJoin.ManualID = {$wpdb->prefix}tblManuals.ManualID 
+        WHERE {$wpdb->prefix}tblJoin.SerialNumber = %s AND {$wpdb->prefix}tblJoin.ProductCode = %s;
+        ",
+        $serial_number,
         $product_code
     ));
-    echo $wpdb->last_query;
+
     return $manual;
 }
+
 
 // activation hook
 
