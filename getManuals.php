@@ -9,8 +9,8 @@ Author URI:
 License: GPL2
 */
 //include all the classes in src/
-require plugin_dir_path(__FILE__) . 'src/display-manuals.php';
-require plugin_dir_path(__FILE__) . 'src/tables.php';
+require_once plugin_dir_path(__FILE__) . 'src/display-manuals.php';
+require_once plugin_dir_path(__FILE__) . 'src/tables.php';
 
 // Shortcode to display the search form
 add_shortcode('serial_number_search_form', 'display_serial_number_search_form');
@@ -26,7 +26,8 @@ register_activation_hook(__FILE__, 'my_plugin_activate');
 function my_plugin_activate()
 {
   // Code to be executed on plugin activation
-  tables::create_tables();
+  $tb = new tables();
+  $tb::create_tables();
 }
 
 // Deactivation hook
@@ -40,6 +41,7 @@ register_uninstall_hook(__FILE__, 'my_plugin_uninstall');
 function my_plugin_uninstall()
 {
     // Code to be executed on plugin uninstallation
-    tables::drop_tables();
+    $tb = new tables();
+    $tb::drop_tables();
 }
 ?>
