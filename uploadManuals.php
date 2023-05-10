@@ -53,6 +53,14 @@ function display_manual_uploader_form()
                         $new_manual_id
                     )
                 );
+                // Insert into tblDate
+                $date_id = $serial_number;
+                $date = date('Y-m-d', strtotime('20' . substr($date_id, 0, 2) . '-' . substr($date_id, 2, 2) . '-' . substr($date_id, 4, 2)));
+
+                $insert_date = $wpdb->insert("{$wpdb->prefix}tblDate", array(
+                    'DateID' => $date_id,
+                    'Date' => $date
+                ));
 
                 $success = true;
             }
