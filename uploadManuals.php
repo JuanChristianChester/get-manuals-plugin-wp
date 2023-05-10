@@ -3,69 +3,71 @@
 Plugin Name: Manual Uploader
 */
 
-// Register shortcode
 add_shortcode('manual_uploader', 'display_manual_uploader_form');
 
-// Function to display the upload form
 function display_manual_uploader_form()
 {
     global $wpdb;
 
-    // Initialize variables
-    $error = '';
-    $success = '';
-
-    // Handle form submission
+    $message = '';
     if (isset($_POST['submit'])) {
-        $file = $_FILES['file'];
-        $manual_id = $_POST['manual_id'];
-        $filename = $file['name'];
-        $filetype = $file['type'];
-        $filecontent = file_get_contents($file['tmp_name']);
-        $filesize = $file['size'];
+        $serial_number = sanitize_text_field($_POST['serial_number']);
+        $product_code = sanitize_text_field($_POST['product_code']);
 
-        // Check if manual ID already exists in the database
-        $existing_manual = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}tblManuals WHERE ManualID = %s", $manual_id));
-        if ($existing_manual) {
-            $error = 'Manual ID already exists. Please choose a different one.';
+        // Check if the serial number and product code are already in the database
+        $manual_exists = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->prefix}tblJoin WHERE DateID = %s AND ProductID = %s",
+            date('ymd'),
+            $product_code
+        ));
+
+        if ($manual_exists) {
+            $message = 'A manual for this product and date already exists in the database.';
         } else {
-            // Insert manual into database
-            $result = $wpdb->insert("{$wpdb->prefix}tblManuals", array(
-                'ManualID' => $manual_id,
-                'filename' => $filename,
-                'pdf' => $filecontent
-            ), array('%s', '%s', '%s'));
+            // Save the manual to the database
+            $manual_id = uniqid();
+            $filename = sanitize_file_name($_FILES['manual_file']['name']);
+            $pdf_data = file_get_contents($_FILES['manual_file']['tmp_name']);
 
-            // Check if insert was successful
-            if ($result) {
-                $success = 'Manual uploaded successfully.';
-            } else {
-                $error = 'Error uploading manual.';
-            }
+            $wpdb->query($wpdb->prepare(
+                "INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename, pdf) VALUES (%s, %s, %s)",
+                $manual_id,
+                $filename,
+                $pdf_data
+            ));
+
+            $wpdb->query($wpdb->prepare(
+                "INSERT INTO {$wpdb->prefix}tblJoin (DateID, ProductID, ManualID) VALUES (%s, %s, %s)",
+                date('ymd'),
+                $product_code,
+                $manual_id
+            ));
+
+            $message = 'Manual uploaded successfully!';
         }
     }
 
-    // Display form
     ob_start();
 ?>
     <form method="post" enctype="multipart/form-data">
-        <label for="manual_id">Manual ID:</label>
-        <input type="text" name="manual_id" id="manual_id">
+        <label for="serial_number">Serial Number:</label>
+        <input type="text" name="serial_number" id="serial_number">
         <br><br>
-        <label for="file">Upload Manual:</label>
-        <input type="file" name="file" id="file">
+        <label for="product_code">Product Code:</label>
+        <input type="text" name="product_code" id="product_code">
+        <br><br>
+        <label for="manual_file">Manual File:</label>
+        <input type="file" name="manual_file" id="manual_file">
         <br><br>
         <input type="submit" name="submit" value="Upload">
     </form>
 
-    <?php if ($error) { ?>
-        <p><?php echo $error; ?></p>
+    <?php if ($message) { ?>
+        <p><?php echo $message; ?></p>
     <?php } ?>
 
-    <?php if ($success) { ?>
-        <p><?php echo $success; ?></p>
-    <?php } ?>
 <?php
     return ob_get_clean();
 }
+
 ?>
