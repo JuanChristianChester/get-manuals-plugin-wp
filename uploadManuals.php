@@ -29,10 +29,13 @@ function display_manual_uploader_form()
         } elseif (!$pdf_file || $pdf_file['error'] !== UPLOAD_ERR_OK) {
             $error = 'Please select a PDF file to upload';
         } else {
-            // Save PDF file to wp-content/uploads folder
+
+            // Save PDF file to wp-content/uploads/pdfs folder
             $upload_dir = wp_upload_dir();
+            $target_dir = $upload_dir['basedir'] . '/pdfs';
             $file_name = $pdf_file['name'];
-            $target_file = $upload_dir['path'] . '/' . $file_name;
+            $target_file = $target_dir . '/' . $file_name;
+
 
             if (move_uploaded_file($pdf_file['tmp_name'], $target_file)) {
                 // Insert manual into database
