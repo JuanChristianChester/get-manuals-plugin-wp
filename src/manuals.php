@@ -7,8 +7,7 @@ class Manual
     public $productCode;
     function __construct($serial_number, $product_code)
     {   
-        $db = new Database();
-        $this->manual = $db->get_manual_by_serial_number_and_product_code($serial_number, $product_code);
+        $this->manual = Database::get_manual($serial_number, $product_code);
         $this->serialNumber = $serial_number;
         $this->productCode = $product_code;
     }
