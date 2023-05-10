@@ -29,10 +29,11 @@ function display_manual_uploader_form()
         } elseif (!$pdf_file || $pdf_file['error'] !== UPLOAD_ERR_OK) {
             $error = 'Please select a PDF file to upload';
         } else {
-            // Read PDF file
-            $pdf_data = file_get_contents($pdf_file['tmp_name']);
-            if (!$pdf_data) {
-                $error = 'Failed to read PDF file';
+            // Save PDF file to server
+            $upload_dir = wp_upload_dir();
+            $target_file = trailingslashit($upload_dir['basedir']) . 'uploads/' . $pdf_file['name'];
+            if (!move_uploaded_file($pdf_file['tmp_name'], $target_file)) {
+                $error = 'Failed to save PDF file to server';
             } else {
                 // Insert manual into database
                 $wpdb->query(
@@ -40,7 +41,7 @@ function display_manual_uploader_form()
                         "INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename, pdf) VALUES (%s, %s, %s)",
                         $new_manual_id,
                         $pdf_file['name'],
-                        $pdf_data
+                        $pdf_file['type']
                     )
                 );
 
@@ -48,11 +49,12 @@ function display_manual_uploader_form()
                 $wpdb->query(
                     $wpdb->prepare(
                         "INSERT INTO {$wpdb->prefix}tblJoin (DateID, ProductID, ManualID) VALUES (%s, %s, %s)",
-                        date('ymd'),
+                        $serial_number,
                         $product_code,
                         $new_manual_id
                     )
                 );
+
                 // Insert into tblDate
                 $date_id = $serial_number;
                 $date = date('Y-m-d', strtotime('20' . substr($date_id, 0, 2) . '-' . substr($date_id, 2, 2) . '-' . substr($date_id, 4, 2)));
@@ -66,6 +68,7 @@ function display_manual_uploader_form()
             }
         }
     }
+
 ?>
     <?php if ($success) { ?>
         <p>Manual uploaded successfully.</p>
