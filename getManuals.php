@@ -42,14 +42,16 @@ function display_serial_number_search_form()
     <?php } ?>
 
     <?php if ($manual) { ?>
+
+
         <h3>Manual Details</h3>
         <ul>
             <li><strong>Serial Number:</strong> <?php echo $manual->SerialNumber; ?></li>
             <li><strong>Product Code:</strong> <?php echo $manual->ProductCode; ?></li>
             <li><strong>Manual:</strong>
-                <?php $pdf_url = $manual; ?>
+                <?php $pdf_url = content_url('/uploads/pdfs/' . $manual); ?>
                 <?php if ($pdf_url) { ?>
-                    <a href="https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/<?php echo $pdf_url; ?>" target="_blank"><?php echo $pdf_url; ?></a>
+                    <a href="<?php echo $pdf_url; ?>" target="_blank"><?php echo $manual; ?></a>
                 <?php } else { ?>
                     No manual available.
                 <?php } ?>
@@ -58,6 +60,7 @@ function display_serial_number_search_form()
     <?php } ?>
 <?php
 }
+
 
 //Function to search the DB for the serial number and return the manual
 
