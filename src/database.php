@@ -1,24 +1,34 @@
 <?php
 class Database
 {
-  private static $wpdb;
-  private static $table_names;
-  private static $sql;
-
-  public static function initialize()
+  public static function get_manual($serial_number, $product_code)
   {
     global $wpdb;
-    self::$wpdb = $wpdb;
-    self::$table_names = self::get_table_names();
-    self::$sql = self::build_sql_query();
+    $prepared_sql = $wpdb->prepare(self::build_sql_query($wpdb), $serial_number, $product_code);
+
+    $manual = $wpdb->get_var($prepared_sql);
+
+    return $manual ?: false;
   }
 
-  private static function get_table_names()
+  public static function create_tables() {
+    global $wpdb;
+    self::drop_tables($wpdb);
+
+    self::create_tblDate($wpdb);
+    self::create_tblProduct($wpdb);
+    self::create_tblManuals($wpdb);
+    self::create_tblJoin($wpdb);
+
+    self::insert_data($wpdb);
+  }
+  private static function get_table_names($wpdb)
   {
-    $table_name_date = self::$wpdb->prefix . 'tblDate';
-    $table_name_product = self::$wpdb->prefix . 'tblProduct';
-    $table_name_manuals = self::$wpdb->prefix . 'tblManuals';
-    $table_name_join = self::$wpdb->prefix . 'tblJoin';
+    
+    $table_name_date = $wpdb->prefix . 'tblDate';
+    $table_name_product = $wpdb->prefix . 'tblProduct';
+    $table_name_manuals = $wpdb->prefix . 'tblManuals';
+    $table_name_join = $wpdb->prefix . 'tblJoin';
 
     return [
       'date' => $table_name_date,
@@ -28,63 +38,48 @@ class Database
     ];
   }
 
-  private static function build_sql_query()
+  private static function build_sql_query($wpdb)
   {
+    $table_names = self::get_table_names($wpdb);
     $sql = "SELECT m.filename 
-        FROM " . self::$table_names['manuals'] . " AS m
-        INNER JOIN " . self::$table_names['join'] . " AS j ON m.ManualID = j.ManualID
-        INNER JOIN " . self::$table_names['date'] . " AS d ON j.DateID = d.DateID
-        INNER JOIN " . self::$table_names['product'] . " AS p ON j.ProductID = p.ProductID
+        FROM " . $table_names['manuals'] . " AS m
+        INNER JOIN " . $table_names['join'] . " AS j ON m.ManualID = j.ManualID
+        INNER JOIN " . $table_names['date'] . " AS d ON j.DateID = d.DateID
+        INNER JOIN " . $table_names['product'] . " AS p ON j.ProductID = p.ProductID
         WHERE j.DateID = %s AND j.ProductID = %s";
 
     return $sql;
   }
 
-  public static function get_manual($serial_number, $product_code)
-  {
-    $prepared_sql = self::$wpdb->prepare(self::$sql, $serial_number, $product_code);
-
-    $manual = self::$wpdb->get_var($prepared_sql);
-
-    return $manual ?: false;
-  }
-
-  public static function create_tables() {
-    self::drop_tables();
-
-    self::create_tblDate();
-    self::create_tblProduct();
-    self::create_tblManuals();
-    self::create_tblJoin();
-
-    self::insert_data();
-  }
-
-  private static function create_tblDate() {
-    self::$wpdb->query("CREATE TABLE IF NOT EXISTS " . self::$wpdb->prefix . "tblDate (
+  private static function create_tblDate($wpdb) {
+    
+    $wpdb->query("CREATE TABLE IF NOT EXISTS " . $wpdb->prefix . "tblDate (
       DateID varchar(6) PRIMARY KEY,
       Date date
     )");
   }
 
-  private static function create_tblProduct() {
-    self::$wpdb->query("CREATE TABLE IF NOT EXISTS " . self::$wpdb->prefix . "tblProduct (
+  private static function create_tblProduct($wpdb) {
+    
+    $wpdb->query("CREATE TABLE IF NOT EXISTS " . $wpdb->prefix . "tblProduct (
       ProductID VARCHAR(30) PRIMARY KEY,
       ProductName VARCHAR(255),
       ProductDescription TEXT
     )");
   }
 
-  private static function create_tblManuals() {
-    self::$wpdb->query("CREATE TABLE IF NOT EXISTS " . self::$wpdb->prefix . "tblManuals (
+  private static function create_tblManuals($wpdb) {
+    
+    $wpdb->query("CREATE TABLE IF NOT EXISTS " . $wpdb->prefix . "tblManuals (
       ManualID varchar(15) PRIMARY KEY,
       filename VARCHAR(255),
       pdf LONGBLOB
     )");
   }
 
-  private static function create_tblJoin() {
-    self::$wpdb->query("CREATE TABLE IF NOT EXISTS " . self::$wpdb->prefix . "tblJoin (
+  private static function create_tblJoin($wpdb) {
+    
+    $wpdb->query("CREATE TABLE IF NOT EXISTS " . $wpdb->prefix . "tblJoin (
       DateID VARCHAR(6),
       ProductID VARCHAR(30),
       ManualID varchar(15),
@@ -92,8 +87,8 @@ class Database
     )");
   }
 
-  private static function insert_data(){
-    global $wpdb;
+  private static function insert_data($wpdb){
+    
     $wpdb->query("INSERT INTO {$wpdb->prefix}tblDate (DateID, Date)
     VALUES
       ('010501', '2001-05-01'),
