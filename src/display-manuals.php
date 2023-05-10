@@ -1,19 +1,16 @@
 <?php
 require_once plugin_dir_path(__FILE__) . '/manuals.php';
+
 class DisplayManuals
 {
-    function display_serial_number_search_form()
+    public static function display_serial_number_search_form()
     {
         $manual = null;
-        $error = '';
 
         if (isset($_POST['submit'])) {
             $serial_number = $_POST['serial_number'];
             $product_code = $_POST['product_code'];
             $manual = new Manual($serial_number, $product_code);
-            if (!$manual->manual) {
-                $error = 'Serial number and/or product code not found. Please enter valid ones.';
-            }
         }
 ?>
         <form method="post" action="">
@@ -26,8 +23,8 @@ class DisplayManuals
             <input type="submit" name="submit" value="Search">
         </form>
 
-        <?php if ($error) { ?>
-            <p><?php echo $error; ?></p>
+        <?php if (!$manual->manual) { ?>
+            <p>Serial number and/or product code not found. Please enter valid ones.</p>
         <?php } ?>
 
         <?php if ($manual->manual) { ?>
