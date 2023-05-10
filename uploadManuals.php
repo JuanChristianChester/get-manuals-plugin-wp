@@ -29,18 +29,19 @@ function display_manual_uploader_form()
         } elseif (!$pdf_file || $pdf_file['error'] !== UPLOAD_ERR_OK) {
             $error = 'Please select a PDF file to upload';
         } else {
-            // Read PDF file
-            $pdf_data = file_get_contents($pdf_file['tmp_name']);
-            if (!$pdf_data) {
-                $error = 'Failed to read PDF file';
-            } else {
+            // Save PDF file to wp-content/uploads folder
+            $upload_dir = wp_upload_dir();
+            $file_name = $pdf_file['name'];
+            $target_file = $upload_dir['path'] . '/' . $file_name;
+
+            if (move_uploaded_file($pdf_file['tmp_name'], $target_file)) {
                 // Insert manual into database
                 $wpdb->query(
                     $wpdb->prepare(
                         "INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename, pdf) VALUES (%s, %s, %s)",
                         $new_manual_id,
-                        $pdf_file['name'],
-                        $pdf_data
+                        $file_name,
+                        $target_file
                     )
                 );
 
@@ -53,6 +54,7 @@ function display_manual_uploader_form()
                         $new_manual_id
                     )
                 );
+
                 // Insert into tblDate
                 $date_id = $serial_number;
                 $date = date('Y-m-d', strtotime('20' . substr($date_id, 0, 2) . '-' . substr($date_id, 2, 2) . '-' . substr($date_id, 4, 2)));
@@ -63,6 +65,8 @@ function display_manual_uploader_form()
                 ));
 
                 $success = true;
+            } else {
+                $error = 'Failed to save PDF file';
             }
         }
     }
