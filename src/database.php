@@ -1,7 +1,7 @@
 <?php
 class Database
 {
-    function get_manual_by_serial_number_and_product_code($serial_number, $product_code)
+    static function get_manual_by_serial_number_and_product_code($serial_number, $product_code)
     {
         global $wpdb;
         // Define table names with prefix
@@ -30,7 +30,7 @@ class Database
 
         return $manual;
     }
-    function create_tables()
+    static function create_tables()
     {
         global $wpdb;
         // Drop tables if they exist
@@ -77,12 +77,6 @@ class Database
       ('C05-35-02', 'Air 5 Hypobaric Oxygen & Pressure', '0-40% O2 & 10-1300mbar (A) (Panel Mount)'),
       ('SAT-35-14', 'Air 5 Converter', 'USB to RS485 Converter')");
 
-        // $url1 = 'https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man1.pdf';
-        // $url2 = 'https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/Man2.pdf';
-
-        // $file1 = file_get_contents($url1);
-        // $file2 = file_get_contents($url2);
-
         $wpdb->query("INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename, pdf) 
     VALUES 
   ('MAN-0001', 'Man1.pdf', NULL), 
@@ -93,4 +87,11 @@ class Database
   ('010501', 'C08-001-001-01-1-1', 'MAN-0001'),
   ('020501', 'C05-35-02', 'MAN-0002')");
     }
+  static function drop_tables(){
+    global $wpdb;
+    $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tblJoin");
+    $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tblManuals");
+    $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tblProduct");
+    $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tblDate");
+  }
 }
