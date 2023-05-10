@@ -1,5 +1,5 @@
 <?php
-require plugin_dir_path(__FILE__) . '/manuals.php';
+require_once plugin_dir_path(__FILE__) . '/manuals.php';
 class DisplayManuals
 {
     function display_serial_number_search_form()
