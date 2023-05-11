@@ -53,6 +53,7 @@ function display_serial_number_search_form()
                     <a href="<?php echo $pdf_url; ?>" target="_blank"><?php echo $manual; ?></a>
                 <?php } else { ?>
                     No manual available.
+                    <?php echo $pdf_url; ?>
                 <?php } ?>
             </li>
         </ul>
