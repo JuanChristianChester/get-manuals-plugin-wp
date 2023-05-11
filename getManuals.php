@@ -47,13 +47,12 @@ function display_serial_number_search_form()
             <li><strong>Serial Number:</strong> <?php echo $manual->SerialNumber; ?></li>
             <li><strong>Product Code:</strong> <?php echo $manual->ProductCode; ?></li>
             <li><strong>Manual:</strong>
-                <?php $pdf_url = wp_upload_dir()['baseurl'] . '/pdfs/' . $manual; ?>
+                <?php $pdf_url = 'wp-content/uploads/pdfs/' . $manual; ?>
 
                 <?php if (file_exists($pdf_url)) { ?>
                     <a href="<?php echo $pdf_url; ?>" target="_blank"><?php echo $manual; ?></a>
                 <?php } else { ?>
                     No manual available.
-                    <?php echo $pdf_url; ?>
                 <?php } ?>
             </li>
         </ul>
