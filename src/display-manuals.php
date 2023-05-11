@@ -30,11 +30,11 @@ class DisplayManuals
                 <li><strong>Serial Number:</strong> <?php echo $serial_number; ?></li>
                 <li><strong>Product Code:</strong> <?php echo $product_code; ?></li>
                 <li><strong>Manual:</strong>
-                    <?php $pdf_url = wp_upload_dir()['baseurl'] . '/pdfs/' . $manual; ?>
-                    <?php $pdf_path = wp_upload_dir()['basedir'] . '/pdfs/' . $manual; ?>
+                    <?php $pdf_url = wp_upload_dir()['baseurl'] . '/pdfs/' . $manual->manual; ?>
+                    <?php $pdf_path = wp_upload_dir()['basedir'] . '/pdfs/' . $manual->manual; ?>
 
                     <?php if (file_exists($pdf_path)) { ?>
-                        <a href="<?php echo $pdf_url; ?>" target="_blank"><?php echo $manual; ?></a>
+                        <a href="<?php echo $pdf_url; ?>" target="_blank"><?php echo $manual->manual; ?></a>
                     <?php } else { ?>
                         No manual available.
                     <?php } ?>
