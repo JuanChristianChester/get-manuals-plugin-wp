@@ -11,7 +11,7 @@ License: GPL2
 //include all the classes in src/
 require_once plugin_dir_path(__FILE__) . 'src/display-manuals.php';
 require_once plugin_dir_path(__FILE__) . 'src/tables.php';
-
+require_once plugin_dir_path(__FILE__) . 'src/display-upload.php';
 // Shortcode to display the search form
 add_shortcode('serial_number_search_form', 'display_serial_number_search_form');
 /// Function to display the search form and manual details
@@ -19,6 +19,13 @@ function display_serial_number_search_form()
 {
     $display_manuals = new DisplayManuals();
     $display_manuals->display_serial_number_search_form();
+}
+
+add_shortcode('manual_uploader', 'display_upload_form');
+function display_upload_form()
+{
+    $display_manuals = new DisplayUpload();
+    $display_manuals->display_manual_uploader();
 }
 
 // activation hook
@@ -34,7 +41,9 @@ function my_plugin_activate()
 register_deactivation_hook(__FILE__, 'my_plugin_deactivate');
 function my_plugin_deactivate()
 {
-    // Code to be executed on plugin deactivation
+    // Code to be executed on plugin uninstallation
+    $tb = new tables();
+    $tb::drop_tables();
 }
 // Uninstall hook
 register_uninstall_hook(__FILE__, 'my_plugin_uninstall');

@@ -104,4 +104,58 @@ class Database
     $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tblManuals");
     $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tblDate");
   }
+  public static function save_pdf($pdf_file, $wpdb, $serial_number, $product_code,)
+  {
+    $error = null;
+    // Get the last manual ID from the database
+    $last_manual_id = $wpdb->get_var("SELECT ManualID FROM {$wpdb->prefix}tblManuals ORDER BY ManualID DESC LIMIT 1");
+
+    // Increment the last manual ID to get the new manual ID
+    $new_manual_id = 'MAN-' . str_pad((intval(substr($last_manual_id, 4)) + 1), 4, '0', STR_PAD_LEFT);
+    // Save PDF file to wp-content/uploads/pdfs folder
+    $upload_dir = wp_upload_dir();
+    $target_dir = $upload_dir['basedir'] . '/pdfs';
+    $file_name = $pdf_file['name'];
+    $target_file = $target_dir . '/' . $file_name;
+
+
+    if (move_uploaded_file($pdf_file['tmp_name'], $target_file)) {
+      // Insert manual into database
+      $wpdb->query(
+        $wpdb->prepare(
+          "INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename) VALUES (%s, %s)",
+          $new_manual_id,
+          $file_name
+        )
+      );
+
+      // Insert join data into database
+      $wpdb->query(
+        $wpdb->prepare(
+          "INSERT INTO {$wpdb->prefix}tblJoin (DateID, ProductID, ManualID) VALUES (%s, %s, %s)",
+          $serial_number,
+          $product_code,
+          $new_manual_id
+        )
+      );
+
+      // Insert into tblDate
+      $date_id = $serial_number;
+      $date = date('Y-m-d', strtotime('20' . substr($date_id, 0, 2) . '-' . substr($date_id, 2, 2) . '-' . substr($date_id, 4, 2)));
+
+      $wpdb->query(
+        $wpdb->prepare(
+          "INSERT INTO {$wpdb->prefix}tblDate (DateID, Date) VALUES (%s, %s)",
+          $date_id,
+          $date
+        )
+      );
+
+      $success = true;
+    } else {
+      $error = 'Failed to save PDF file';
+      $success = false;
+    }
+    return $success;
+  }
 }
