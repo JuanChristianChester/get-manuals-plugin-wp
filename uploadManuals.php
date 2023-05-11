@@ -19,7 +19,7 @@ function display_manual_uploader_form()
         $new_manual_id = 'MAN-' . str_pad((intval(substr($last_manual_id, 4)) + 1), 4, '0', STR_PAD_LEFT);
 
         // Get form data
-        $serial_number = sanitize_text_field($_POST['serial_number']);
+        $serial_number = substr(sanitize_text_field($_POST['serial_number']), 0, -2);
         $product_code = sanitize_text_field($_POST['product_code']);
         $pdf_file = $_FILES['pdf_file'];
 
