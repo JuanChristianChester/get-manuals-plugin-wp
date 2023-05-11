@@ -42,6 +42,7 @@ function display_serial_number_search_form()
 
     <?php if ($manual) { ?>
         <h3>Manual Details</h3>
+        <p>Please click the Manual link to download it:</p>
         <ul>
             <li><strong>Serial Number:</strong> <?php echo $serial_number; ?></li>
             <li><strong>Product Code:</strong> <?php echo $product_code; ?></li>
