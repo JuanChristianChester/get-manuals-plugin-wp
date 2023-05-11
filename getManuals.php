@@ -44,4 +44,3 @@ function my_plugin_uninstall()
     $tb = new tables();
     $tb::drop_tables();
 }
-?>
