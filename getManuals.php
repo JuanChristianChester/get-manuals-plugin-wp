@@ -48,8 +48,8 @@ function display_serial_number_search_form()
             <li><strong>Product Code:</strong> <?php echo $manual->ProductCode; ?></li>
             <li><strong>Manual:</strong>
                 <?php $pdf_url = wp_upload_dir()['baseurl'] . '/pdfs/' . $manual; ?>
-                <?php $filepath = 'wp-content/uploads/pdfs/' ?>
-                <?php if (file_exists($filepath)) { ?>
+
+                <?php if (file_exists($pdf_url)) { ?>
                     <a href="<?php echo $pdf_url; ?>" target="_blank"><?php echo $manual; ?></a>
                 <?php } else { ?>
                     No manual available.
