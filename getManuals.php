@@ -43,8 +43,8 @@ function display_serial_number_search_form()
     <?php if ($manual) { ?>
         <h3>Manual Details</h3>
         <ul>
-            <li><strong>Serial Number:</strong> <?php echo $manual->SerialNumber; ?></li>
-            <li><strong>Product Code:</strong> <?php echo $manual->ProductCode; ?></li>
+            <li><strong>Serial Number:</strong> <?php echo $serial_number; ?></li>
+            <li><strong>Product Code:</strong> <?php echo $product_code; ?></li>
             <li><strong>Manual:</strong>
                 <?php $pdf_url = wp_upload_dir()['baseurl'] . '/pdfs/' . $manual; ?>
                 <?php $pdf_path = wp_upload_dir()['basedir'] . '/pdfs/' . $manual; ?>
