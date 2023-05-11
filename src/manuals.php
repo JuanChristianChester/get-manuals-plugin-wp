@@ -6,7 +6,7 @@ class Manual
     public $serialNumber;
     public $productCode;
     function __construct($serial_number, $product_code)
-    {   
+    {
         $this->manual = Database::get_manual($serial_number, $product_code);
         $this->serialNumber = $serial_number;
         $this->productCode = $product_code;

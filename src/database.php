@@ -11,12 +11,12 @@ class Database
     return $manual ?: false;
   }
 
-  public static function create_tables() {
+  public static function create_tables()
+  {
     global $wpdb;
     self::drop_tables($wpdb);
 
     self::create_tblDate($wpdb);
-    self::create_tblProduct($wpdb);
     self::create_tblManuals($wpdb);
     self::create_tblJoin($wpdb);
 
@@ -24,15 +24,13 @@ class Database
   }
   private static function get_table_names($wpdb)
   {
-    
+
     $table_name_date = $wpdb->prefix . 'tblDate';
-    $table_name_product = $wpdb->prefix . 'tblProduct';
     $table_name_manuals = $wpdb->prefix . 'tblManuals';
     $table_name_join = $wpdb->prefix . 'tblJoin';
 
     return [
       'date' => $table_name_date,
-      'product' => $table_name_product,
       'manuals' => $table_name_manuals,
       'join' => $table_name_join,
     ];
@@ -45,40 +43,31 @@ class Database
         FROM " . $table_names['manuals'] . " AS m
         INNER JOIN " . $table_names['join'] . " AS j ON m.ManualID = j.ManualID
         INNER JOIN " . $table_names['date'] . " AS d ON j.DateID = d.DateID
-        INNER JOIN " . $table_names['product'] . " AS p ON j.ProductID = p.ProductID
         WHERE j.DateID = %s AND j.ProductID = %s";
 
     return $sql;
   }
 
-  private static function create_tblDate($wpdb) {
-    
+  private static function create_tblDate($wpdb)
+  {
+
     $wpdb->query("CREATE TABLE IF NOT EXISTS " . $wpdb->prefix . "tblDate (
       DateID varchar(6) PRIMARY KEY,
       Date date
     )");
   }
 
-  private static function create_tblProduct($wpdb) {
-    
-    $wpdb->query("CREATE TABLE IF NOT EXISTS " . $wpdb->prefix . "tblProduct (
-      ProductID VARCHAR(30) PRIMARY KEY,
-      ProductName VARCHAR(255),
-      ProductDescription TEXT
-    )");
-  }
+  private static function create_tblManuals($wpdb)
+  {
 
-  private static function create_tblManuals($wpdb) {
-    
     $wpdb->query("CREATE TABLE IF NOT EXISTS " . $wpdb->prefix . "tblManuals (
       ManualID varchar(15) PRIMARY KEY,
-      filename VARCHAR(255),
-      pdf LONGBLOB
-    )");
+      filename VARCHAR(255))");
   }
 
-  private static function create_tblJoin($wpdb) {
-    
+  private static function create_tblJoin($wpdb)
+  {
+
     $wpdb->query("CREATE TABLE IF NOT EXISTS " . $wpdb->prefix . "tblJoin (
       DateID VARCHAR(6),
       ProductID VARCHAR(30),
@@ -87,38 +76,32 @@ class Database
     )");
   }
 
-  private static function insert_data($wpdb){
-    
+  private static function insert_data($wpdb)
+  {
+
     $wpdb->query("INSERT INTO {$wpdb->prefix}tblDate (DateID, Date)
     VALUES
       ('010501', '2001-05-01'),
       ('011201', '2001-12-01'),
       ('020501', '2002-05-01')");
 
-    $wpdb->query("INSERT INTO {$wpdb->prefix}tblProduct (ProductID, ProductName, ProductDescription)
-    VALUES
-      ('C08-001-001-01-1-1', 'Air 5 Oxygen & Carbon Dioxide', '0-100% O2 + 0-5% CO2 ambient monitor with diffusion sensor (surface mount)'),
-      ('C05-35-02', 'Air 5 Hypobaric Oxygen & Pressure', '0-40% O2 & 10-1300mbar (A) (Panel Mount)'),
-      ('SAT-35-14', 'Air 5 Converter', 'USB to RS485 Converter')");
-
-    $wpdb->query("INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename, pdf) 
+    $wpdb->query("INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename) 
     VALUES 
-  ('MAN-0001', 'Man1.pdf', NULL), 
-  ('MAN-0002', 'Man2.pdf', NULL)");
+      ('MAN-0001', 'Man1.pdf'), 
+      ('MAN-0002', 'Man2.pdf')");
+
 
     $wpdb->query("INSERT INTO {$wpdb->prefix}tblJoin (DateID, ProductID, ManualID)
     VALUES
   ('010501', 'C08-001-001-01-1-1', 'MAN-0001'),
   ('020501', 'C05-35-02', 'MAN-0002')");
-}
+  }
 
-public static function drop_tables()
-{
+  public static function drop_tables()
+  {
     global $wpdb;
     $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tblJoin");
     $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tblManuals");
-    $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tblProduct");
     $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}tblDate");
-}
-
+  }
 }

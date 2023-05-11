@@ -23,25 +23,25 @@ class DisplayManuals
             <input type="submit" name="submit" value="Search">
         </form>
 
-        <?php if (!$manual->manual) { ?>
-            <p>Serial number and/or product code not found. Please enter valid ones.</p>
-        <?php } ?>
-
         <?php if ($manual->manual) { ?>
             <h3>Manual Details</h3>
+            <p>Please click the Manual link to download it:</p>
             <ul>
-                <li><strong>Serial Number:</strong> <?php echo $manual->serialNumber; ?></li>
-                <li><strong>Product Code:</strong> <?php echo $manual->productCode; ?></li>
+                <li><strong>Serial Number:</strong> <?php echo $serial_number; ?></li>
+                <li><strong>Product Code:</strong> <?php echo $product_code; ?></li>
                 <li><strong>Manual:</strong>
-                    <?php $pdf_url = $manual->manual; ?>
-                    <?php if ($pdf_url) { ?>
-                        <a href="https://2126669.linux.studentwebserver.co.uk/SATSystems/wp-content/uploads/2023/05/<?php echo $pdf_url; ?>" target="_blank"><?php echo $pdf_url; ?></a>
+                    <?php $pdf_url = wp_upload_dir()['baseurl'] . '/pdfs/' . $manual; ?>
+                    <?php $pdf_path = wp_upload_dir()['basedir'] . '/pdfs/' . $manual; ?>
+
+                    <?php if (file_exists($pdf_path)) { ?>
+                        <a href="<?php echo $pdf_url; ?>" target="_blank"><?php echo $manual; ?></a>
                     <?php } else { ?>
                         No manual available.
                     <?php } ?>
                 </li>
             </ul>
         <?php } ?>
+
 <?php
     }
 }
