@@ -16,11 +16,11 @@ class DisplayUpload
         $pdf_file = null;
         if (isset($_POST['submit'])) {
                     // Get form data
-        $serial_number = sanitize_text_field($_POST['serial_number']);
-        $product_code = sanitize_text_field($_POST['product_code']);
+        $this->serial_number = sanitize_text_field($_POST['serial_number']);
+        $this->product_code = sanitize_text_field($_POST['product_code']);
         $pdf_file = $_FILES['pdf_file'];
         // Validate form data
-        if (!$serial_number || !$product_code) {
+        if (!$this->serial_number || !$this->product_code) {
             $error = 'Please enter serial number and product code';
         } elseif (!$pdf_file || $pdf_file['error'] !== UPLOAD_ERR_OK) {
             $error = 'Please select a PDF file to upload';
