@@ -65,6 +65,10 @@ function display_serial_number_search_form()
 //Function to search the DB for the serial number and return the manual
 function get_manual_by_serial_number_and_product_code($serial_number, $product_code)
 {
+
+    // Strip the last 2 characters from the serial number
+    $serial_number = substr($serial_number, 0, -2);
+
     global $wpdb;
     // Define table names with prefix
     $table_name_date = $wpdb->prefix . 'tblDate';
