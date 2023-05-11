@@ -41,10 +41,9 @@ function display_manual_uploader_form()
                 // Insert manual into database
                 $wpdb->query(
                     $wpdb->prepare(
-                        "INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename, pdf) VALUES (%s, %s, %s)",
+                        "INSERT INTO {$wpdb->prefix}tblManuals (ManualID, filename) VALUES (%s, %s)",
                         $new_manual_id,
-                        $file_name,
-                        $target_file
+                        $file_name
                     )
                 );
 
