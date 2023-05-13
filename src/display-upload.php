@@ -15,21 +15,23 @@ class DisplayUpload
         $success = false;
         $pdf_file = null;
         if (isset($_POST['submit'])) {
-                    // Get form data
-        $this->serial_number = sanitize_text_field($_POST['serial_number']);
-        $this->product_code = sanitize_text_field($_POST['product_code']);
-        $pdf_file = $_FILES['pdf_file'];
-        // Validate form data
-        if (!$this->serial_number || !$this->product_code) {
-            $error = 'Please enter serial number and product code';
-        } elseif (!$pdf_file || $pdf_file['error'] !== UPLOAD_ERR_OK) {
-            $error = 'Please select a PDF file to upload';
-        };
-            $success = Database::save_pdf($pdf_file, $wpdb, $this->serial_number, $this->product_code);
+            // Get form data
+            $this->serial_number = sanitize_text_field($_POST['serial_number']);
+            $this->product_code = sanitize_text_field($_POST['product_code']);
+            $pdf_file = $_FILES['pdf_file'];
+            // Validate form data
+            if (!$this->serial_number || !$this->product_code) {
+                $this->error = 'Please enter both a serial number and product code';
+            } elseif (!$pdf_file || $pdf_file['error'] !== UPLOAD_ERR_OK) {
+                $this->error = 'Please select a PDF file to upload';
+            } else {
+                $success = Database::save_pdf($pdf_file, $wpdb, $this->serial_number, $this->product_code);
+            }
         }
 ?>
         <?php if ($success) { ?>
             <p>Manual uploaded successfully.</p>
+            <button onclick="window.location.href='upload-manuals'">Click here to upload another manual</button>
         <?php } else { ?>
             <p><?php echo ($this->error) ?></p>
             <form method="post" action="" enctype="multipart/form-data">
@@ -45,19 +47,6 @@ class DisplayUpload
                 <input type="submit" name="submit" value="Upload">
             </form>
 <?php
-        }
-    }
-    private function getFormData()
-    {
-        // Get form data
-        $serial_number = sanitize_text_field($_POST['serial_number']);
-        $product_code = sanitize_text_field($_POST['product_code']);
-        $pdf_file = $_FILES['pdf_file'];
-        // Validate form data
-        if (!$serial_number || !$product_code) {
-            $error = 'Please enter serial number and product code';
-        } elseif (!$pdf_file || $pdf_file['error'] !== UPLOAD_ERR_OK) {
-            $error = 'Please select a PDF file to upload';
         }
     }
 }
