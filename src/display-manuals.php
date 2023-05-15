@@ -16,18 +16,23 @@ class DisplayManuals
             } else {
                 $manual = new Manual($serial_number, $product_code);
             }
-        }
-
+        }?>
+        <div class = "display-manual">
+            <?php
         self::display_search_form($searchError);
         self::display_manual_details($manual, $serial_number, $product_code);
+        ?>
+        </div>
+        <?php
     }
 
     private static function display_search_form($searchError)
     {
 ?>
+
+        <div class="centered-form">
         <h2 class="wp-block-heading has-text-align-center">Manuals</h2>
         <p class="has-text-align-center has-medium-font-size">To get the correct manual, please search using your product number and serial number below</p>
-        <div class="centered-form">
             <form method="post" action="" class="my-form">
                 <?php if (!empty($searchError)) { ?>
                     <p class="error"><?php echo $searchError; ?></p>
