@@ -1,0 +1,88 @@
+.centered-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 0px; /* Reduce the space between .centered-form and .manual-details-container */
+}
+
+.my-form {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box; /* Include padding in the width calculation */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0px; /* Reduce the space between .centered-form and .manual-details-container */
+}
+
+.my-form label {
+    display: block;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.my-form input[type="text"] {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box; /* Include padding in the width calculation */
+}
+
+.my-form input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: center; /* Horizontally center the button */
+}
+
+.my-form input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.manual-details-container {
+    text-align: center;
+}
+
+.manual-details-container h3 {
+    font-size: 24px;
+    margin-top: 0;
+}
+
+.manual-details-container p {
+    font-size: 18px;
+}
+
+.manual-details-container ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.manual-details-container li {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.manual-details-container strong {
+    font-weight: bold;
+}
+
+.manual-details-container a {
+    color: #4caf50;
+    text-decoration: none;
+}
+
+.manual-details-container a:hover {
+    text-decoration: underline;
+}
+
+.manual-details-container .no-manual {
+    color: red;
+    font-style: italic;
+}

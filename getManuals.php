@@ -54,3 +54,10 @@ function my_plugin_uninstall()
     $tb = new tables();
     $tb::drop_tables();
 }
+
+//enque styles.css in the src folder
+function my_plugin_styles()
+{
+    wp_enqueue_style('my-plugin-style', plugins_url('src/styles.css', __FILE__));
+}
+add_action('wp_enqueue_scripts', 'my_plugin_styles');
