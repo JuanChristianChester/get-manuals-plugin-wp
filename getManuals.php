@@ -20,7 +20,6 @@ function display_serial_number_search_form()
     $display_manuals = new DisplayManuals();
     $display_manuals->display_serial_number_search_form();
 }
-*/
 
 add_shortcode('manual_uploader', 'display_upload_form');
 function display_upload_form()
@@ -46,6 +45,7 @@ function my_plugin_deactivate()
     $tb = new tables();
     $tb::drop_tables();
 }
+
 // Uninstall hook
 register_uninstall_hook(__FILE__, 'my_plugin_uninstall');
 function my_plugin_uninstall()
